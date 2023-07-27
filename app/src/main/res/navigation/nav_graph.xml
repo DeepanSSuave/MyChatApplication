@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/loginFragment"
+    android:id="@+id/nav_graph">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.mychatapplication.LoginFragment"
+        android:label="LoginFragment">
+
+        <action android:id="@+id/actionfromLoginFragmentToDashBoardFragment"
+            app:destination="@id/DashboardFragment"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/DashboardFragment"
+        android:name="com.example.mychatapplication.view.DashBoardFragment"
+        android:label="DashboardFragment">
+
+        <action
+        android:id="@+id/actionFromDashboardFragmentToChatFragment"
+        app:destination="@+id/chatFragment"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.mychatapplication.view.ChatFragment"
+        android:label="ChatFragment">
+
+        <action
+            android:id="@+id/actionFromChatFragmentToDashBoardFragment"
+            app:destination="@+id/DashboardFragment"/>
+
+    </fragment>
+
+</navigation>
