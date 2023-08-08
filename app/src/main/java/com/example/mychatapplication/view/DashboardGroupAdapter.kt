@@ -48,26 +48,6 @@ class DashboardGroupAdapter(private var groupId: (GetMessageObjectItem) -> Unit)
         notifyItemChanged(0)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setNewMessageData(message: ReceivingMessage) {
-//
-//        if (newMessagePosition == fromPosition) {
-////
-////            val itemToMove = groupList[fromPosition]
-////            groupList.removeAt(fromPosition)
-////            groupList.add(0, itemToMove)
-//
-//        }
-
-        groupList.forEach {
-            if (it.id == message.group_id) {
-                val position = groupList.indexOf(it)
-                groupList.elementAt(position).last_message = message.message.toString()
-                notifyItemMoved(position, 0)
-            }
-        }
-    }
-
     inner class InnerViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
         val groupName: TextView = item.findViewById(R.id.groupNameText)

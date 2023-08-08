@@ -29,7 +29,7 @@ class SocketService : Service() {
         private lateinit var client: OkHttpClient
         private lateinit var userWebSocket: WebSocket
         private lateinit var groupWebSocket: WebSocket
-        private const val WEBSOCKET_USER_URL = "ws://192.168.5.42:8005/ws/user"
+        private const val WEBSOCKET_USER_URL = "ws://192.168.5.57:8005/ws/user"
 
         fun startGroupChannel(groupId: Int, accessToken: String, context: Context) {
             if (this::groupWebSocket.isInitialized)
@@ -37,7 +37,7 @@ class SocketService : Service() {
 
             val groupRequest = Request.Builder()
                 .header("Authorization", accessToken)
-                .url("ws://192.168.5.42:8005/ws/group/${groupId}")
+                .url("ws://192.168.5.57:8005/ws/group/${groupId}")
                 .build()
 
             groupWebSocket = client.newWebSocket(groupRequest, WebsocketListener(context))

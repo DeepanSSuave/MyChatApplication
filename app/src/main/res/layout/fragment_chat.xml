@@ -9,6 +9,8 @@
         android:background="@drawable/dashboard_wallpaper"
         tools:context=".view.ChatFragment">
 
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
@@ -57,7 +59,7 @@
                 app:layout_constraintTop_toBottomOf="@id/view1" />
 
             <ImageView
-                android:id="@+id/timeText"
+                android:id="@+id/moreBtn"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="20dp"
@@ -88,6 +90,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/scroll_to_down_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#877A7A"
+                android:src="@drawable/downward_24"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+                app:layout_constraintEnd_toEndOf="parent" />
+
             <LinearLayout
                 android:id="@+id/edittextLinear"
                 android:layout_width="match_parent"
@@ -106,27 +118,30 @@
                     <EditText
                         android:id="@+id/messageEdit"
                         android:layout_width="340dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
+                        android:layout_height="50dp"
                         android:background="@android:color/transparent"
                         android:hint="Type Message"
                         android:padding="7dp"
+                        android:scrollHorizontally="true"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/sendBtn"
                         app:layout_constraintStart_toStartOf="@id/innerConstraintLayout"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/sendBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:text="@string/send"
-                        android:textColor="#008577"
+                        android:src="@drawable/ic_round_send_24"
+                        android:textColor="#757575"
                         android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

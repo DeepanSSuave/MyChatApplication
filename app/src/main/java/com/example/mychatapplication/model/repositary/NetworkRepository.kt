@@ -52,6 +52,14 @@ class NetworkRepository @Inject constructor(
         }
     }
 
+    fun getUserLoggedOut(token : String) : Call<LogoutResponse>? {
+        try {
+            return networkApi.logoutUser(LogoutRequest(token))
+        }catch (e : Throwable) {
+            throw e
+        }
+    }
+
     fun getAccessToken(token : String) : Call<GetAccessTokenResponse>? {
         try {
             return networkApi.getAccessToken(GetAccessTokenRequest(token))

@@ -108,7 +108,7 @@ class LoginFragment : Fragment() {
                     it.payload?.refresh?.let { refreshToken -> preference.set("RefreshToken", refreshToken) }
 //                    val serviceIntent = Intent(this, WebSocketService::class.java)
 //                    context?.let { it1 -> ContextCompat.startForegroundService(it1,serviceIntent) }
-                    this.findNavController().navigate(R.id.DashboardFragment)
+                    this.findNavController().navigate(R.id.actionfromLoginFragmentToDashBoardFragment)
                 }
             }
         }
@@ -149,7 +149,7 @@ class LoginFragment : Fragment() {
                 }
                 is OnNetworkSuccess -> {
                     Log.e("CurrentUser", it.payload.toString())
-                    this.findNavController().navigate(R.id.DashboardFragment)
+                    this.findNavController().navigate(R.id.actionfromLoginFragmentToDashBoardFragment)
                 }
             }
         }

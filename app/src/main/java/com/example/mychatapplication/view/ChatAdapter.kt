@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.mychatapplication.R
 import com.example.mychatapplication.model.repositary.Message
 import org.json.JSONException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChatAdapter(private val userId: Int, private val groupID : Int) : RecyclerView.Adapter<ViewHolder>() {
 
@@ -21,6 +23,10 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
     private val TYPEMESSAGERECEIVED = 1
     private val TYPEIMAGESENT = 2
     private val TYPEIMAGERECEIVED = 3
+    private val TYPENEWMESSAGE = 4
+
+    private var newMessageView: Boolean = false
+    private var canShowNewMessageView: Boolean = true
 
     private var messages = mutableListOf<Message>()
 
@@ -36,12 +42,15 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
 
     private class SentMessageHolder(itemView: View) : ViewHolder(itemView) {
         var messageTxt: TextView = itemView.findViewById(R.id.sentMessage)
+        val timeStamp : TextView = itemView.findViewById(R.id.timeTextSentMessageLayout)
     }
 
     private class ReceivedMessageHolder(itemView: View) :
         ViewHolder(itemView) {
         var nameTxt: TextView = itemView.findViewById(R.id.nameTxt)
         var messageTxt: TextView = itemView.findViewById(R.id.receivedTxt)
+        var newMessageLayout: View = itemView.findViewById(R.id.newMessageLayout)
+        val timeStamp : TextView = itemView.findViewById(R.id.timeTextReceivedMessageLayout)
     }
 
     private class ReceivedImageHolder(itemView: View) :
@@ -57,9 +66,12 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
             return if (message.sender?.id == userId) {
                 if (message.message != null)
                     TYPEMESSAGESENT else
-                        TYPEIMAGESENT
+                    TYPEIMAGESENT
             } else {
-                if (message.message != null) TYPEMESSAGERECEIVED else TYPEIMAGERECEIVED
+                if (message.message != null) {
+                    newMessageView = true
+                    TYPEMESSAGERECEIVED
+                } else TYPEIMAGERECEIVED
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -96,6 +108,7 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val message = messages[position]
@@ -109,6 +122,11 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
                 } else {
                     val messageHolder = holder as SentMessageHolder
                     messageHolder.messageTxt.text = message.message
+                    val timeString = message.created_at.toString()
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("HH:mm a", Locale.getDefault())
+                    val date = inputFormat.parse(timeString)
+                    messageHolder.timeStamp.text = date?.let { outputFormat.format(it) }.toString()
                 }
             } else {
                 if (message.message == null) {
@@ -120,6 +138,17 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
                     val messageHolder = holder as ReceivedMessageHolder
                     messageHolder.nameTxt.text = message.sender?.username.toString()
                     messageHolder.messageTxt.text = message.message
+                    val timeString = message.created_at.toString()
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("HH:mm a", Locale.getDefault())
+                    val date = inputFormat.parse(timeString)
+                    messageHolder.timeStamp.text = date?.let { outputFormat.format(it) }.toString()
+                    if(canShowNewMessageView && !message.isRead) {
+                        canShowNewMessageView = false
+                        messageHolder.newMessageLayout.visibility = View.VISIBLE
+                    } else {
+                        messageHolder.newMessageLayout.visibility = View.GONE
+                    }
                 }
             }
         } catch (e: JSONException) {
@@ -139,8 +168,9 @@ class ChatAdapter(private val userId: Int, private val groupID : Int) : Recycler
 
     @SuppressLint("NotifyDataSetChanged")
     fun addItem(jsonObject: Message) {
-            messages.add(jsonObject)
-            notifyDataSetChanged()
+        canShowNewMessageView = true
+        messages.add(jsonObject)
+        notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")

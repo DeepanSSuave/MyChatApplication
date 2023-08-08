@@ -17,6 +17,14 @@ data class VerifyResponse(
     var code : String
 )
 
+data class LogoutResponse(
+    var message : String
+)
+
+data class LogoutRequest(
+    var token : String
+)
+
 data class VerifyRequest(
     var token : String
 )

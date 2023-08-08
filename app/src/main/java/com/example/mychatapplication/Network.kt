@@ -27,6 +27,11 @@ interface Network {
         @Body token: VerifyRequest?
     ): Call<VerifyResponse>?
 
+    @POST("api/token/verify/")
+    fun logoutUser(
+        @Body token: LogoutRequest?
+    ): Call<LogoutResponse>?
+
     @Headers("Content-Type: application/json")
     @GET("get_user/")
     fun getCurrentUser(

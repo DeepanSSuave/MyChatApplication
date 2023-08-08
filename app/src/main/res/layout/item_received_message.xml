@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="5dp"
     android:layout_marginStart="10dp"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/newMessageLayout"
+        layout="@layout/new_message_layout"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/nameTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
         android:layout_margin="4dp"
         android:text="Name"
         android:textStyle="bold" />
@@ -29,4 +36,11 @@
         android:textColor="@color/black"
         android:textSize="16sp" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/timeTextReceivedMessageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="1.05 PM" />
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.mychatapplication.view
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,12 +9,18 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mychatapplication.SocketService
 import com.example.mychatapplication.databinding.FragmentChatBinding
 import com.example.mychatapplication.di.ChatPreferenceManager
@@ -43,6 +50,7 @@ class ChatFragment : Fragment(), TextWatcher {
     private var messageId: Int? = null
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,7 +75,8 @@ class ChatFragment : Fragment(), TextWatcher {
         binding?.groupNameText?.text = groupName
 
         binding?.recyclerView?.adapter = chatAdapter
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(requireContext())
+        val mLayoutManager = LinearLayoutManager(binding?.recyclerView?.context)
+        binding?.recyclerView?.layoutManager = mLayoutManager
         chatAdapter.setData(messages)
         binding?.recyclerView?.scrollToPosition(chatAdapter.itemCount - 1)
 
@@ -82,6 +91,33 @@ class ChatFragment : Fragment(), TextWatcher {
             Toast.makeText(context, "No Messages", Toast.LENGTH_SHORT).show()
         }
 
+        binding?.scrollToDownArrow?.setOnClickListener() {
+            binding?.recyclerView?.post {
+                binding?.recyclerView?.smoothScrollToPosition(chatAdapter.itemCount - 1)
+            }
+        }
+
+        binding?.scrollToDownArrow?.visibility = View.GONE
+
+        binding?.recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    binding?.scrollToDownArrow?.visibility = View.GONE
+                } else {
+                    val lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition()
+                    if (lastVisibleItemPosition < chatAdapter.itemCount - 1) {
+                        binding?.scrollToDownArrow?.visibility = View.VISIBLE
+                    } else {
+                        binding?.scrollToDownArrow?.visibility = View.GONE
+                    }
+                }
+
+//
+            }
+        })
+
         if (binding?.messageEdit?.text.isNullOrEmpty()) {
 //            binding?.pickImgBtn?.visibility = View.VISIBLE
             binding?.sendBtn?.visibility = View.VISIBLE
@@ -92,7 +128,7 @@ class ChatFragment : Fragment(), TextWatcher {
 
         binding?.sendBtn?.setOnClickListener {
 
-            messageTxt = binding?.messageEdit?.text.toString()
+            messageTxt = binding?.messageEdit?.text.toString().trim()
 
             val json = JSONObject().put("message", messageTxt)
 //            groupWebSocket.send(json.toString())
@@ -138,25 +174,29 @@ class ChatFragment : Fragment(), TextWatcher {
     private var messageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val message = intent.getStringExtra("message")
-            val senderId = intent.getIntExtra("senderId",0)
-            val groupId = intent.getIntExtra("groupId",0)
+            val isRead = intent.getBooleanExtra("isRead", false)
+            val senderId = intent.getIntExtra("senderId", 0)
+            val groupId = intent.getIntExtra("groupId", 0)
             val channelType = intent.getStringExtra("type")
             val senderUserName = intent.getStringExtra("senderUserName")
 
-            if(channelType != "user_channel" && groupId == myPreferenceManager.getInt("GroupID")){
-            chatAdapter.addItem(
-                Message(
-                    currentTimeString,
-                    messageId,
-                    message,
-                    Sender(
-                        null,
-                        null,
-                        senderId,
-                        null, senderUserName
+            if (channelType != "user_channel" && groupId == myPreferenceManager.getInt("GroupID")) {
+//                binding?.newMessageLayout?.visibility = View.VISIBLE
+                chatAdapter.addItem(
+                    Message(
+                        currentTimeString,
+                        messageId,
+                        isRead,
+                        message,
+                        Sender(
+                            null,
+                            null,
+                            senderId,
+                            null,
+                            senderUserName
+                        )
                     )
                 )
-            )
                 binding?.recyclerView?.smoothScrollToPosition(chatAdapter.itemCount - 1)
             }
         }
@@ -185,5 +225,9 @@ class ChatFragment : Fragment(), TextWatcher {
         binding?.sendBtn?.visibility = View.INVISIBLE
 //        binding?.pickImgBtn?.visibility = View.VISIBLE
         binding?.messageEdit?.addTextChangedListener(this)
+    }
+
+    private fun convertDpToPixel(dp: Float, context: Context): Float {
+        return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 }

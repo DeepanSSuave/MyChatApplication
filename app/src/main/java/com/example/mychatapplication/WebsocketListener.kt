@@ -29,6 +29,7 @@ class WebsocketListener(private val context: Context) : WebSocketListener() {
         intent.putExtra("senderId",json.sender_id)
         intent.putExtra("type", json.type)
         intent.putExtra("groupId",json.group_id)
+        intent.putExtra("isRead",json.isRead)
         intent.putExtra("senderUserName", json.sender_name)
         intent.putExtra("createdOn", json.created_on)
         context.sendBroadcast(intent)

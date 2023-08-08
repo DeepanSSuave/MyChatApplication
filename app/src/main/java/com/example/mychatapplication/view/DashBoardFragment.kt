@@ -95,7 +95,7 @@ class DashBoardFragment : Fragment() {
                     Log.d("Error", it.messageRes.toString())
                 }
                 is OnNetworkSuccess -> {
-                    Log.e("GroupMessages", it.payload.toString())
+                    Log.e("Groups", it.payload.toString())
                     groupAdapter.setData(it.payload?.let { it1 -> ArrayList(it1) })
 
                 }
@@ -160,6 +160,7 @@ class DashBoardFragment : Fragment() {
                         groupId,
                         message,
                         channelType,
+                        false,
                         null
                     )
                 )

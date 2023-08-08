@@ -9,6 +9,15 @@
         android:background="@drawable/dashboard_wallpaper"
         tools:context=".view.DashBoardFragment">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineTopLL"
+            android:src="@drawable/ic_baseline_logout_24"
+            android:layout_margin="8dp"/>
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineTopLL"
             android:layout_width="wrap_content"
